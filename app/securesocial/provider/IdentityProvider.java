@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import play.mvc.Http;
+
 /**
  * Base class for all itendity providers
  */
@@ -38,7 +40,9 @@ public abstract class IdentityProvider {
     private static final String SECURESOCIAL_SECURE_SOCIAL_AUTHENTICATE = "securesocial.SecureSocial.authenticate";
     private static final String SECURESOCIAL = "securesocial.";
     private static final String DOT = ".";
-
+    
+    protected static final String DOMAIN_CONTEXT = "domain";
+    
     /**
      * Creates a new IdentityProvider
      *
@@ -61,9 +65,13 @@ public abstract class IdentityProvider {
      *
      * @return A SocialUser if the user was authenticated properly
      */
-    public SocialUser authenticate() {
+    public SocialUser authenticate(Http.Request request) {
         // authenticate against the 3rd party service (facebook, twitter, etc)
         Map<String, Object> authContext = new HashMap<String, Object>();
+        
+        // Adding the domain to the authContext
+        authContext.put(DOMAIN_CONTEXT, request.domain);
+        
         SocialUser user = doAuth(authContext);
 
         // if user authenticated correctly, retrieve some profile information
