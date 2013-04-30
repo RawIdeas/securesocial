@@ -187,10 +187,19 @@ public class SecureSocial extends Controller {
 
 	/**
 	 * The log out action
-	 * @param redirectTo, redirects the browser to the rdirectTo after loging out
+	 * 
+	 * @param redirectTo
+	 *            , redirects the browser to the rdirectTo after loging out
 	 */
-	public static void logout(final String redirectTo) {
+	public static void logout(String redirectTo) {
 		clearUserId();
+
+		// if the logout url is null then redirect to the value
+		// in config
+		if (redirectTo == null) {
+			redirectTo = Play.configuration.getProperty(SECURESOCIAL_LOGOUT_REDIRECT, SECURESOCIAL_SECURE_SOCIAL_LOGIN);
+		}
+
 		redirect(redirectTo);
 	}
 
