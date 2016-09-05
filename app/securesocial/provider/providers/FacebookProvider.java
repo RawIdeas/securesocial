@@ -55,16 +55,26 @@ public class FacebookProvider extends OAuth2Provider
             Logger.error("Error retrieving profile information from Facebook. Error type: %s, message: %s.", type, message);
             throw new AuthenticationException();
         }
-        
+
         user.id.id = me.get(ID).getAsString();
-        user.displayName = me.get(NAME).getAsString();
+        if(me.get(NAME) != null) {
+            user.displayName = me.get(NAME).getAsString();
+        }
 
         //
         // Starting October 2012 the picture field will become a json object.
         // making the code compatible with the old and new version for now.
         //
         JsonElement picture = me.get(PICTURE);
-        user.avatarUrl = !picture.isJsonObject() ? picture.getAsString() : picture.getAsJsonObject().get(DATA).getAsJsonObject().get(URL).getAsString();
-        user.email = me.get(EMAIL).getAsString();
+        if(picture != null) {
+            user.avatarUrl = !picture.isJsonObject() ? picture.getAsString() : picture.getAsJsonObject()
+                    .get(DATA)
+                    .getAsJsonObject()
+                    .get(URL)
+                    .getAsString();
+        }
+        if(me.get(EMAIL) != null) {
+            user.email = me.get(EMAIL).getAsString();
+        }
     }
 }
